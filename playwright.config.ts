@@ -1,13 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 import "dotenv/config";
-import qase from './qase.js';
 
 export default defineConfig({
   testDir: "./tests",
-  outputDir: "../.temp/qase",
 
   metadata: {
-    env: "STG",
+    env: "DEV",
     type: "Regression",
     url: "https://www.npmjs.org/package/monocart-reporter",
   },
@@ -38,10 +36,41 @@ export default defineConfig({
     [
       "monocart-reporter",
       {
-        name: "qase",
-        outputFile: ".temp/qase/index.html",
-        onEnd: async (reportData, helper) => {
-          await qase(reportData, helper);
+        name: "My Test Report",
+        outputFile: "./my-report/index.html",
+        customFieldsInComments: true,
+        // custom columns
+        columns: (defaultColumns) => {
+          // insert custom column(s) before a default column
+          const index = defaultColumns.findIndex(
+            (column) => column.id === "duration"
+          );
+          defaultColumns.splice(
+            index,
+            0,
+            {
+              // define the column in reporter
+              id: "owner",
+              name: "Owner",
+              align: "center",
+              searchable: true,
+              styleMap: {
+                "font-weight": "normal",
+              },
+            },
+            {
+              // another column for JIRA link
+              id: "jira",
+              name: "JIRA Key",
+              width: 100,
+              searchable: true,
+              styleMap: "font-weight:normal;",
+              formatter: (v, rowItem, columnItem) => {
+                const key = rowItem[columnItem.id];
+                return `<a href="https://your-jira-url/${key}" target="_blank">${v}</a>`;
+              },
+            }
+          );
         },
       },
     ],

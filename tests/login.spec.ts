@@ -11,7 +11,10 @@ test.describe('Login Tests', () => {
     inventoryPage = new InventoryPage(page);
   });
 
-  test('Valid login', async () => {
+  
+  test('Valid login',{
+    tag: '@slow',
+  }, async () => {
     await loginPage.goto();
     await loginPage.login('standard_user', 'secret_sauce');
     const titles = await inventoryPage.getProductTitles();

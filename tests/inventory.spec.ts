@@ -16,6 +16,8 @@ test.describe('Inventory Tests', () => {
     cartPage = new CartPage(page);
   });
 
+
+  
   test('Add Sauce Labs Backpack to cart', async () => {
     await inventoryPage.addBackpackToCart(); 
     await cartPage.goto();  

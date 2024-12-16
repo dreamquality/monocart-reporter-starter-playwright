@@ -17,9 +17,15 @@ test.describe('Checkout Tests', () => {
     inventoryPage = new InventoryPage(page);
     cartPage = new CartPage(page);
     checkoutPage = new CheckoutPage(page);
-    await inventoryPage.addBackpackToCart();  // Добавляем товар в корзину
+    await inventoryPage.addBackpackToCart(); 
   });
 
+
+     /**
+     * for case
+     * @owner Vasya
+     * @jira MCR-16777
+     */ 
   test('Complete checkout process', async () => {
     await cartPage.goto();
     const cartItems = await cartPage.getCartItems();
