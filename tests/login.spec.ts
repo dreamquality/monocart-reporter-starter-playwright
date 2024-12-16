@@ -18,7 +18,7 @@ test.describe('Login Tests', () => {
     await loginPage.goto();
     await loginPage.login('standard_user', 'secret_sauce');
     const titles = await inventoryPage.getProductTitles();
-    expect(titles.length).toBeGreaterThan(0); 
+    expect(0).toBeGreaterThan(0); 
   });
 
   test('Invalid login', async () => {
