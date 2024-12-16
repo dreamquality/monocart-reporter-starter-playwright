@@ -1,0 +1,55 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update apt packages
+      run: sudo apt-get update
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '18.x'
+    - name: Install dependencies
+      run: npm i
+
+    - name: Create .env file
+      run: |
+        echo "QASE_TOKEN=${{ secrets.QASE_TOKEN }}" >> .env
+        echo "QASE_PROJECT_NAME=${{ secrets.QASE_PROJECT_NAME }}" >> .env
+
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+
+    - name: Run Playwright tests
+      run: npx playwright test --project=chromium
+      continue-on-error: true 
+
+    - name: Upload Playwright test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-test-results
+        path: test-results/
+
+    - name: Upload Odhin Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: odhin-report
+        path: my-report/
+
+    - name: Deploy report to Github Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: my-report
